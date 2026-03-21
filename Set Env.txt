@@ -1,0 +1,5 @@
+set MONGO_URI=mongodb://127.0.0.1:27017/
+set MONGO_DB_NAME=ai_doctor
+set MONGO_USERS_COLLECTION=users
+set GROQ_API_KEY=xxx
+set FLASK_SECRET_KEY=tamizh
