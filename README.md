@@ -1,154 +1,154 @@
-# Project Setup Guide
+# AI Doctor
 
-This guide provides step-by-step instructions to set up your project environment, including the installation of FFmpeg and PortAudio across macOS, Linux, and Windows, as well as setting up a Python virtual environment using Pipenv, pip, or conda.
+AI Doctor is a multimodal assistant that combines:
 
-## Table of Contents
+1. Speech-to-text (Groq Whisper)
+2. Medical-style image analysis (Llama vision model)
+3. Text-to-speech (ElevenLabs with gTTS fallback)
+4. Flask authentication + Gradio app UI
 
-1. [Installing FFmpeg and PortAudio](#installing-ffmpeg-and-portaudio)
-   - [macOS](#macos)
-   - [Linux](#linux)
-   - [Windows](#windows)
-2. [Setting Up a Python Virtual Environment](#setting-up-a-python-virtual-environment)
-   - [Using Pipenv](#using-pipenv)
-   - [Using pip and venv](#using-pip-and-venv)
-   - [Using Conda](#using-conda)
-3. [Running the application](#project-phases-and-python-commands)
+## Features
 
-## Installing FFmpeg and PortAudio
+1. Login/register flow with MongoDB-backed users
+2. Voice input from microphone
+3. Optional medical image upload
+4. Doctor response in text and generated voice
+5. Multilingual speech mode in UI:
+   - English
+   - Hindi
+   - Tamil
 
-### macOS
+## Project Structure
 
-1. **Install Homebrew** (if not already installed):
+1. `main.py` starts both Flask (`:5000`) and Gradio (`:7860`)
+2. `flask_app.py` handles auth and routing
+3. `gradio_app.py` handles voice + image doctor interaction
+4. `voice_of_the_patient.py` handles speech-to-text
+5. `voice_of_the_doctor.py` handles text-to-speech
+6. `brain_of_the_doctor.py` handles image-aware LLM response
 
-   ```bash
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-   ```
+## Prerequisites
 
-2. **Install FFmpeg and PortAudio:**
+1. Python 3.10+
+2. FFmpeg installed and available on PATH
+3. PortAudio (required by `pyaudio` / microphone stack)
+4. MongoDB running locally or remotely
 
-   ```bash
-   brew install ffmpeg portaudio
-   ```
-
-
-### Linux
-For Debian-based distributions (e.g., Ubuntu):
-
-1. **Update the package list**
-
-```
-sudo apt update
-```
-
-2. **Install FFmpeg and PortAudio:**
-```
-sudo apt install ffmpeg portaudio19-dev
-```
+## Install System Dependencies
 
 ### Windows
 
-#### Download FFmpeg:
-1. Visit the official FFmpeg download page: [FFmpeg Downloads](https://ffmpeg.org/download.html)
-2. Navigate to the Windows builds section and download the latest static build.
+1. Install FFmpeg and add `ffmpeg\bin` to PATH
+2. Install PortAudio (or install audio tooling that satisfies `pyaudio` requirements)
 
-#### Extract and Set Up FFmpeg:
-1. Extract the downloaded ZIP file to a folder (e.g., `C:\ffmpeg`).
-2. Add the `bin` directory to your system's PATH:
-   - Search for "Environment Variables" in the Start menu.
-   - Click on "Edit the system environment variables."
-   - In the System Properties window, click on "Environment Variables."
-   - Under "System variables," select the "Path" variable and click "Edit."
-   - Click "New" and add the path to the `bin` directory (e.g., `C:\ffmpeg\bin`).
-   - Click "OK" to apply the changes.
+### macOS
 
-#### Install PortAudio:
-1. Download the PortAudio binaries from the official website: [PortAudio Downloads](http://www.portaudio.com/download.html)
-2. Follow the installation instructions provided on the website.
-
----
-
-## Setting Up a Python Virtual Environment
-
-### Using Pipenv
-1. **Install Pipenv (if not already installed):**  
-```
-pip install pipenv
+```bash
+brew install ffmpeg portaudio
 ```
 
-2. **Install Dependencies with Pipenv:** 
+### Linux (Debian/Ubuntu)
 
-```
-pipenv install
-```
-
-3. **Activate the Virtual Environment:** 
-
-```
-pipenv shell
+```bash
+sudo apt update
+sudo apt install ffmpeg portaudio19-dev
 ```
 
----
+## Python Environment Setup
 
-### Using `pip` and `venv`
-#### Create a Virtual Environment:
-```
+Choose one method.
+
+### Option A: pip + venv
+
+```bash
 python -m venv venv
 ```
 
-#### Activate the Virtual Environment:
-**macOS/Linux:**
-```
-source venv/bin/activate
-```
+Windows:
 
-**Windows:**
-```
+```bash
 venv\Scripts\activate
 ```
 
-#### Install Dependencies:
+macOS/Linux:
+
+```bash
+source venv/bin/activate
 ```
+
+Install dependencies:
+
+```bash
 pip install -r requirements.txt
 ```
 
----
+### Option B: Pipenv
 
-### Using Conda
-#### Create a Conda Environment:
-```
-conda create --name myenv python=3.11
-```
-
-#### Activate the Conda Environment:
-```
-conda activate myenv
+```bash
+pip install pipenv
+pipenv install
+pipenv shell
 ```
 
-#### Install Dependencies:
-```
-pip install -r requirements.txt
+## Environment Variables
+
+Set these before running:
+
+```bash
+GROQ_API_KEY=your_groq_key
+ELEVEN_API_KEY=your_elevenlabs_key_optional
+MONGO_URI=mongodb://127.0.0.1:27017/
+MONGO_DB_NAME=ai_doctor
+FLASK_SECRET_KEY=replace_with_secure_secret
+GRADIO_URL=http://127.0.0.1:7860
 ```
 
+Notes:
 
-# Project Phases and Python Commands
+1. `ELEVEN_API_KEY` is optional. If missing, app falls back to gTTS.
+2. `GRADIO_URL` usually does not need to change for local run.
 
-## Phase 1: Brain of the doctor
-```
-python brain_of_the_doctor.py
-```
+## Run the App
 
-## Phase 2: Voice of the patient
-```
-python voice_of_the_patient.py
-```
+Recommended (starts both Flask and Gradio):
 
-## Phase 3: Voice of the doctor
-```
-python voice_of_the_doctor.py
+```bash
+python main.py
 ```
 
-## Phase 4: Setup Gradio UI
-```
+Then open:
+
+1. `http://127.0.0.1:5000` for login/home
+2. Gradio runs at `http://127.0.0.1:7860`
+
+## Optional: Run Services Separately
+
+```bash
+python flask_app.py
 python gradio_app.py
 ```
+
+## How to Use
+
+1. Register or login from Flask app
+2. Open AI app page
+3. Select speech language (English/Hindi/Tamil)
+4. Record microphone input
+5. Upload an image (optional)
+6. Submit and review:
+   - Transcribed speech
+   - Doctor text response
+   - Doctor audio response
+
+## Troubleshooting
+
+1. Microphone not working:
+   - Confirm browser mic permissions
+   - Confirm FFmpeg and PortAudio are installed
+2. Mongo errors:
+   - Check `MONGO_URI` and MongoDB service status
+3. No ElevenLabs audio:
+   - Set valid `ELEVEN_API_KEY` or rely on gTTS fallback
+4. API errors:
+   - Verify `GROQ_API_KEY` is present and valid
 
