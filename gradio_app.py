@@ -64,13 +64,12 @@ def process_inputs(audio_filepath, image_filepath, language_name):
 
 def build_demo():
         theme = gr.themes.Base().set(
-                body_background_fill="#020024",
                 body_text_color="#ffffff",
-                block_border_color="rgba(0, 212, 255, 0.25)",
+            block_border_color="rgba(0, 0, 0, 0)",
                 block_title_text_color="#00d4ff",
                 input_background_fill="rgba(255, 255, 255, 0.04)",
-                input_border_color="rgba(0, 212, 255, 0.28)",
-                input_border_color_focus="#00d4ff",
+            input_border_color="rgba(0, 0, 0, 0)",
+            input_border_color_focus="rgba(0, 0, 0, 0)",
                 button_primary_background_fill="#00d4ff",
                 button_primary_background_fill_hover="#33ddff",
                 button_primary_text_color="#020024",
@@ -97,7 +96,8 @@ def build_demo():
         .gr-box, .block, .gr-panel, .gr-input-label, .gr-output-label {
             border-radius: 14px !important;
             background: rgba(2, 0, 36, 0.72) !important;
-            box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.08) inset !important;
+            box-shadow: none !important;
+            border: none !important;
         }
 
         .prose h1, .prose h2, .prose h3, label {
@@ -113,13 +113,14 @@ def build_demo():
         .input-label, .output-label {
             background: rgba(2, 0, 36, 0.9) !important;
             color: #00d4ff !important;
-            border: 1px solid rgba(0, 212, 255, 0.28) !important;
+            border: none !important;
         }
 
         input, textarea, select, .scroll-hide {
             background: rgba(255, 255, 255, 0.04) !important;
             color: #ffffff !important;
-            border-color: rgba(0, 212, 255, 0.28) !important;
+            border: none !important;
+            box-shadow: none !important;
         }
 
         input::placeholder, textarea::placeholder {
